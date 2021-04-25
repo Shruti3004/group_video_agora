@@ -1,6 +1,37 @@
-/*
- * JS Interface for Agora.io SDK
- */
+let userVideoStream;
+let globalStream;
+
+// Webcam canvas init (offscreen)
+let cameraElement = document.createElement("video");
+cameraElement.style =
+  "opacity:0;position:fixed;z-index:-1;left:-100000;top:-100000;";
+document.body.appendChild(cameraElement);
+
+const userCameraHeight = 500;
+const userCameraWidth = 600;
+
+// Stream canvas init (offscreen , will be used to multiplex the streams)
+let streamCanvas = document.getElementById("scanvas");
+let streamCanvasType = streamCanvas.getContext("2d");
+
+let tempCanvas = document.getElementById("tcanvas");
+tempCanvas.height = 1080;
+tempCanvas.width = 1920;
+tempCanvas.style =
+  "opacity:0;position:fixed;z-index:-1;left:-100000;top:-100000;";
+scaleFactor = 10;
+let tempCanvasType = tempCanvas.getContext("2d");
+
+const bodyPixOptions = {
+  multiplier: 0.75,
+  stride: 32,
+  quantBytes: 4,
+};
+//drawing options for bodypix
+const backgroundBlurAmount = 6;
+const edgeBlurAmount = 2;
+const flipHorizontal = true;
+
 
 // video profile settings
 var cameraVideoProfile = '480p_4'; // 640 × 480 @ 30fps  & 750kbs
@@ -138,27 +169,123 @@ function joinChannel(channelName, uid, token) {
   });
 }
 
+// Helper functions to initialize user web streams
+function getUserVideo() {
+  return navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: false,
+  });
+}
+
+async function getVideo() {
+  return new Promise((resolve) => {
+    cameraElement.onloadedmetadata = () => {
+      resolve(cameraElement);
+    };
+  });
+}
+
+// Draw function responsible for drawing each frame of the stream
+function drawVideo(net, video) {
+
+  // streamCanvas.height = userVideoStream
+  //   .getVideoTracks()[0]
+  //   .getSettings().height;
+  // streamCanvas.width = userVideoStream.getVideoTracks()[0].getSettings().width;
+
+  async function detectionFrame() {
+    const imgData = tempCanvasType.getImageData(0, 0, userCameraWidth, userCameraHeight);
+
+    const segmentation = await net.segmentPerson(imgData);
+    tempCanvasType.clearRect(0, 0, userCameraWidth, userCameraHeight);
+	  tempCanvasType.save();
+	  tempCanvasType.scale(-1, 1);
+	  tempCanvasType.translate(-userCameraWidth, 0);
+    tempCanvasType.drawImage(video, 0, 0, userCameraWidth, userCameraHeight);
+    tempCanvasType.restore();
+    bodyPix.drawBokehEffect(
+      streamCanvas,
+      tempCanvas,
+      segmentation,
+      backgroundBlurAmount,
+      edgeBlurAmount,
+      flipHorizontal
+    );
+    requestAnimationFrame(detectionFrame);
+  }
+  detectionFrame();
+}
+
+async function streamMultiplexer() {
+  // init user streams and append to DOM tree
+  userVideoStream = await getUserVideo();
+  const net = await bodyPix.load(bodyPixOptions);
+
+  cameraElement.srcObject = userVideoStream;
+  //cameraElement.play();
+  const video = await getVideo();
+  video.play();
+
+  videoFrameRate = userVideoStream.getVideoTracks()[0].getSettings().frameRate;
+
+  drawInterval = 1000 / videoFrameRate;
+
+  // userCameraWidth =
+  //   userCameraHeight *
+  //   userVideoStream.getVideoTracks()[0].getSettings().aspectRatio;
+
+  // video = document.createElement("video");
+  // video.srcObject = userVideoStream;
+  // video.play();
+
+  // Init base canvas
+  document.body.appendChild(streamCanvas);
+  streamCanvas.height = 500;
+  streamCanvas.width = 600;
+  //streamCanvasType.fillRect(0, 0, 1920, 1080);
+  // Draw frames
+  // setInterval(drawVideo, drawInterval);
+  tempCanvas.width = streamCanvas.width;
+  tempCanvas.height = streamCanvas.height;
+
+  //Kick off the stream
+  drawVideo(net, video);
+
+  // Get video stream from canvas
+  mergedStream = streamCanvas.captureStream(60);
+
+  tracks = mergedStream.getVideoTracks();
+
+  // Add tracks to global stream
+  globalStream.addTrack(tracks[0]);
+}
+
+
 // video streams for channel
 function createCameraStream(uid) {
   var localStream = AgoraRTC.createStream({
     streamID: uid,
     audio: true,
-    video: true,
-    screen: false
+    video: false,
+    screen: false,
   });
+  globalStream = localStream;
   localStream.setVideoProfile(cameraVideoProfile);
   localStream.init(function() {
     console.log("getUserMedia successfully");
     // TODO: add check for other streams. play local stream full size if alone in channel
-    localStream.play('local-video'); // play the given stream within the local-video div
+    localStream.play("local-video"); // play the given stream within the local-video div
 
     // publish local stream
     client.publish(localStream, function (err) {
       console.log("[ERROR] : publish local stream error: " + err);
     });
-  
+
     enableUiControls(localStream); // move after testing
     localStreams.camera.stream = localStream; // keep track of the camera stream for later
+
+    // for custom video
+    streamMultiplexer();
   }, function (err) {
     console.log("[ERROR] : getUserMedia failed", err);
   });
