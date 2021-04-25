@@ -1,6 +1,18 @@
 let userVideoStream;
 let globalStream;
 
+var aiModelAppear = false;
+
+// var aiModel = document.getElementById("magic-btn");
+// aiModel.addEventListener("click", function (e) {
+//   aiModelAppear = !aiModelAppear;
+//   if (aiModelAppear) {
+//     aiModel.childNodes[1].classList.add("fas fa-user");
+//   } else {
+//     aiModel.childNodes[1].classList.remove("fas fa-user");
+//   }
+// });
+
 // Webcam canvas init (offscreen)
 let cameraElement = document.createElement("video");
 cameraElement.style =
@@ -28,7 +40,7 @@ const bodyPixOptions = {
   quantBytes: 4,
 };
 //drawing options for bodypix
-const backgroundBlurAmount = 6;
+const backgroundBlurAmount = 8;
 const edgeBlurAmount = 2;
 const flipHorizontal = true;
 
@@ -160,13 +172,20 @@ client.on("unmute-video", function (evt) {
 
 // join a channel
 function joinChannel(channelName, uid, token) {
-  client.join(token, channelName, uid, function(uid) {
+  // console.log(aiModel.childNodes[1]);
+  client.join(
+    token,
+    channelName,
+    uid,
+    function (uid) {
       console.log("User " + uid + " join channel successfully");
       createCameraStream(uid);
-      localStreams.camera.id = uid; // keep track of the stream uid 
-  }, function(err) {
+      localStreams.camera.id = uid; // keep track of the stream uid
+    },
+    function (err) {
       console.log("[ERROR] : join channel failed", err);
-  });
+    }
+  );
 }
 
 // Helper functions to initialize user web streams
@@ -266,7 +285,7 @@ function createCameraStream(uid) {
   var localStream = AgoraRTC.createStream({
     streamID: uid,
     audio: true,
-    video: false,
+    video: aiModelAppear,
     screen: false,
   });
   globalStream = localStream;
@@ -285,7 +304,7 @@ function createCameraStream(uid) {
     localStreams.camera.stream = localStream; // keep track of the camera stream for later
 
     // for custom video
-    streamMultiplexer();
+    aiModelAppear ? "" : streamMultiplexer();
   }, function (err) {
     console.log("[ERROR] : getUserMedia failed", err);
   });
