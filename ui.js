@@ -1,39 +1,39 @@
 // UI buttons
 function enableUiControls(localStream) {
-
   $("#mic-btn").prop("disabled", false);
   $("#video-btn").prop("disabled", false);
   $("#screen-share-btn").prop("disabled", false);
   $("#exit-btn").prop("disabled", false);
+  $("#magic-btn").prop("disabled", false);
 
-  $("#mic-btn").click(function(){
+  $("#mic-btn").click(function () {
     toggleMic(localStream);
   });
 
-  $("#video-btn").click(function(){
+  $("#video-btn").click(function () {
     toggleVideo(localStream);
   });
 
-  $("#screen-share-btn").click(function(){
+  $("#screen-share-btn").click(function () {
     toggleScreenShareBtn(); // set screen share button icon
-    $("#screen-share-btn").prop("disabled",true); // disable the button on click
-    if(screenShareActive){
+    $("#screen-share-btn").prop("disabled", true); // disable the button on click
+    if (screenShareActive) {
       stopScreenShare();
     } else {
-      var agoraAppId = $('#form-appid').val();
-      var channelName = $('#form-channel').val();
+      var agoraAppId = $("#form-appid").val();
+      var channelName = $("#form-channel").val();
       console.log("init screen share");
-      initScreenShare("6714b60932fb4ace8abedfb32cbf2bd0", "testing"); 
+      initScreenShare("6714b60932fb4ace8abedfb32cbf2bd0", "testing");
     }
   });
 
-  $("#exit-btn").click(function(){
+  $("#exit-btn").click(function () {
     console.log("so sad to see you leave the channel");
-    leaveChannel(); 
+    leaveChannel();
   });
 
-  // keyboard listeners 
-  $(document).keypress(function(e) {
+  // keyboard listeners
+  $(document).keypress(function (e) {
     switch (e.key) {
       case "m":
         console.log("squick toggle the mic");
@@ -42,26 +42,26 @@ function enableUiControls(localStream) {
       case "v":
         console.log("quick toggle the video");
         toggleVideo(localStream);
-        break; 
+        break;
       case "s":
         console.log("initializing screen share");
         toggleScreenShareBtn(); // set screen share button icon
-        $("#screen-share-btn").prop("disabled",true); // disable the button on click
-        if(screenShareActive){
+        $("#screen-share-btn").prop("disabled", true); // disable the button on click
+        if (screenShareActive) {
           stopScreenShare();
         } else {
-          initScreenShare(); 
+          initScreenShare();
         }
-        break;  
+        break;
       case "q":
         console.log("so sad to see you quit the channel");
-        leaveChannel(); 
-        break;   
-      default:  // do nothing
+        leaveChannel();
+        break;
+      default: // do nothing
     }
 
-    // (for testing) 
-    if(e.key === "r") { 
+    // (for testing)
+    if (e.key === "r") {
       window.history.back(); // quick reset
     }
   });

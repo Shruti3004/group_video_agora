@@ -1,17 +1,21 @@
 let userVideoStream;
 let globalStream;
 
-var aiModelAppear = false;
+console.log(localStorage.getItem("aiModelAppear"));
+var aiModelAppear = true;
 
-// var aiModel = document.getElementById("magic-btn");
-// aiModel.addEventListener("click", function (e) {
-//   aiModelAppear = !aiModelAppear;
-//   if (aiModelAppear) {
-//     aiModel.childNodes[1].classList.add("fas fa-user");
-//   } else {
-//     aiModel.childNodes[1].classList.remove("fas fa-user");
-//   }
-// });
+var aiModel = document.getElementById("magic-btn");
+aiModel.addEventListener("click", function (e) {
+  aiModelAppear = !aiModelAppear;
+  localStorage.setItem("aiModelAppear", JSON.stringify(aiModelAppear));
+
+  if (aiModelAppear) {
+    aiModel.childNodes[1].classList.add("fa-user");
+  } else {
+    aiModel.childNodes[1].classList.remove("fa-user");
+  }
+  console.log(aiModelAppear);
+});
 
 // Webcam canvas init (offscreen)
 let cameraElement = document.createElement("video");
@@ -172,14 +176,16 @@ client.on("unmute-video", function (evt) {
 
 // join a channel
 function joinChannel(channelName, uid, token) {
-  // console.log(aiModel.childNodes[1]);
+  // console.log(aiModel.childNodes[1]);  
   client.join(
     token,
     channelName,
     uid,
     function (uid) {
       console.log("User " + uid + " join channel successfully");
-      createCameraStream(uid);
+      aiModelAppear == "true"
+        ? createCameraStream(uid)
+        : customcreateCameraStream(uid);
       localStreams.camera.id = uid; // keep track of the stream uid
     },
     function (err) {
@@ -279,13 +285,45 @@ async function streamMultiplexer() {
   globalStream.addTrack(tracks[0]);
 }
 
+function customcreateCameraStream(uid) {
+  var localStream = AgoraRTC.createStream({
+    streamID: uid,
+    audio: true,
+    video: false,
+    screen: false,
+  });
+  globalStream = localStream;
+  localStream.setVideoProfile(cameraVideoProfile);
+  localStream.init(
+    function () {
+      console.log("getUserMedia successfully");
+      // TODO: add check for other streams. play local stream full size if alone in channel
+      localStream.play("local-video"); // play the given stream within the local-video div
+
+      // publish local stream
+      client.publish(localStream, function (err) {
+        console.log("[ERROR] : publish local stream error: " + err);
+      });
+
+      enableUiControls(localStream, aiModelAppear); // move after testing
+      localStreams.camera.stream = localStream; // keep track of the camera stream for later
+
+      // for custom video
+      streamMultiplexer();
+    },
+    function (err) {
+      console.log("[ERROR] : getUserMedia failed", err);
+    }
+  );
+}
+
 
 // video streams for channel
 function createCameraStream(uid) {
   var localStream = AgoraRTC.createStream({
     streamID: uid,
     audio: true,
-    video: aiModelAppear,
+    video: true,
     screen: false,
   });
   globalStream = localStream;
@@ -304,7 +342,7 @@ function createCameraStream(uid) {
     localStreams.camera.stream = localStream; // keep track of the camera stream for later
 
     // for custom video
-    aiModelAppear ? "" : streamMultiplexer();
+    // aiModelAppear ? "" : streamMultiplexer();
   }, function (err) {
     console.log("[ERROR] : getUserMedia failed", err);
   });
