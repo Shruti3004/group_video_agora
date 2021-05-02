@@ -1,8 +1,7 @@
 let userVideoStream;
 let globalStream;
 
-console.log(localStorage.getItem("aiModelAppear"));
-var aiModelAppear = true;
+var aiModelAppear = localStorage.getItem("aiModelAppear") || false;
 
 var aiModel = document.getElementById("magic-btn");
 aiModel.addEventListener("click", function (e) {
@@ -183,6 +182,7 @@ function joinChannel(channelName, uid, token) {
     uid,
     function (uid) {
       console.log("User " + uid + " join channel successfully");
+      console.log(aiModelAppear);
       aiModelAppear == "true"
         ? createCameraStream(uid)
         : customcreateCameraStream(uid);
@@ -281,6 +281,7 @@ async function streamMultiplexer() {
 
   tracks = mergedStream.getVideoTracks();
 
+  console.log(globalStream);
   // Add tracks to global stream
   globalStream.addTrack(tracks[0]);
 }
