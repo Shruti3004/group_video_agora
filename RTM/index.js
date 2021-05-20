@@ -10,7 +10,7 @@ let options = {
 const appID = "6714b60932fb4ace8abedfb32cbf2bd0";
 // Your token
 options.token =
-  "0066714b60932fb4ace8abedfb32cbf2bd0IAC7Qrv3vxmsxD45o9zMZD5/u6NtwS/XqrCrhy2LUIkADAZa8+gAAAAAEAD4YHXYGmumYAEAAQAaa6Zg";
+  "0066714b60932fb4ace8abedfb32cbf2bd0IAB4e/ckddN0MXeLiTRLVLEtD/vKCaBQKpxI896BVBOGmqPg45sAAAAAEADjXp+1CXinYAEA6AMJeKdg";
 
 // Initialize client
 const client = AgoraRTM.createInstance(appID);
