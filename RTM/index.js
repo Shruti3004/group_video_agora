@@ -1,5 +1,3 @@
-import AgoraRTM from "agora-rtm-sdk";
-
 // Params for login
 let options = {
   uid: "",
