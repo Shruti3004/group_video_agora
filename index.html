@@ -93,6 +93,8 @@
   <canvas width="600" height="500" id="tcanvas"></canvas>
 	</body>
 	<script src="AgoraRTCSDK-3.3.1.js"></script>
+	<script src="./agora-rtm-sdk-1.4.1.js"></script>
+	<script src="./index.js"></script>
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -115,10 +117,11 @@
 			var channelName = $('#form-channel').val();
 			var uid = parseInt($("#form-uid").val());
 			$("#modalForm").modal("hide");
-			initClientAndJoinChannel("6714b60932fb4ace8abedfb32cbf2bd0", "0066714b60932fb4ace8abedfb32cbf2bd0IAA2CcS6w97iG4kUgSL1kzA+dBkdnfoCfOWRUGluHXOihgZa8+gAAAAAEAD4YHXYVn2nYAEAAQBVfadg", "testing", null);
+			initClientAndJoinChannel("6714b60932fb4ace8abedfb32cbf2bd0", "0066714b60932fb4ace8abedfb32cbf2bd0IAA2CcS6w97iG4kUgSL1kzA+dBkdnfoCfOWRUGluHXOihgZa8+gAAAAAEAD4YHXYVn2nYAEAAQBVfadg", "testing", uid);
+			joinRTMChannel(uid);
 		});
 	</script>
 	<script src="ui.js"></script>
-	<script src="agora-interface.js"></script>
+	<script src="agora-interface.js"></script>	
 	<link rel="stylesheet" type="text/css" href="style.css"/>
 </html>
