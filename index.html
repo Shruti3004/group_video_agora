@@ -84,7 +84,8 @@
             </div>
           </div>
           <div class="modal-footer d-flex justify-content-center">
-            <button id="join-channel" class="btn btn-default">Join Channel</button>
+			<button id="join-channel" class="btn btn-default">Join Channel</button>
+			<button id="host" class="btn btn-default">HOST</button>
           </div>
         </div>
       </div>
@@ -110,6 +111,15 @@
 		});
 	</script>
 	<script type="text/javascript">
+		$( "#host" ).click(function( event ) {
+			var agoraAppId = $('#form-appid').val();
+			var token = $('#form-token').val();
+			var channelName = $('#form-channel').val();
+			var uid = parseInt($("#form-uid").val());
+			$("#modalForm").modal("hide");
+			initClientAndJoinChannel("6714b60932fb4ace8abedfb32cbf2bd0", "0066714b60932fb4ace8abedfb32cbf2bd0IACvHpcby6lYcgIwQaQEXG3j5W0uWAO/OPYO85J8VUCxsQZa8+gAAAAAEAA7EFxEBM2oYAEAAQAEzahg", "testing", uid);
+			joinRTMChannel(uid);
+		});
 		// init the session when user clicks join btn
 		$( "#join-channel" ).click(function( event ) {
 			var agoraAppId = $('#form-appid').val();
@@ -117,9 +127,8 @@
 			var channelName = $('#form-channel').val();
 			var uid = parseInt($("#form-uid").val());
 			$("#modalForm").modal("hide");
-			initClientAndJoinChannel("6714b60932fb4ace8abedfb32cbf2bd0", "0066714b60932fb4ace8abedfb32cbf2bd0IAA2CcS6w97iG4kUgSL1kzA+dBkdnfoCfOWRUGluHXOihgZa8+gAAAAAEAD4YHXYVn2nYAEAAQBVfadg", "testing", uid);
-			joinRTMChannel(uid);
-		});
+			initClientAndJoinChannel("6714b60932fb4ace8abedfb32cbf2bd0", "0066714b60932fb4ace8abedfb32cbf2bd0IACvHpcby6lYcgIwQaQEXG3j5W0uWAO/OPYO85J8VUCxsQZa8+gAAAAAEAA7EFxEBM2oYAEAAQAEzahg", "testing", uid);			
+		});		
 	</script>
 	<script src="ui.js"></script>
 	<script src="agora-interface.js"></script>	

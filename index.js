@@ -8,7 +8,7 @@ let options = {
 const appID = "6714b60932fb4ace8abedfb32cbf2bd0";
 // Your token
 options.token =
-  "0066714b60932fb4ace8abedfb32cbf2bd0IAB4e/ckddN0MXeLiTRLVLEtD/vKCaBQKpxI896BVBOGmqPg45sAAAAAEADjXp+1CXinYAEA6AMJeKdg";
+  "0066714b60932fb4ace8abedfb32cbf2bd0IAB1SXLaUyctKCNhQ/4NKyH3psTQzHj19DX2pKJDjPVJuKPg45sAAAAAEAD5pEWcdMuoYAEA6AN0y6hg";
 
 const clientRTM = AgoraRTM.createInstance(appID);
 
@@ -40,4 +40,7 @@ async function joinRTMChannel(uid) {
   console.log(options);
   await clientRTM.login(options);
   console.log("Client LOG IN with this ID");
+  await channel.join().then(() => {
+    console.log("You have successfully joined channel " + channel.channelId);
+  });
 }
