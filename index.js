@@ -8,7 +8,7 @@ let options = {
 const appID = "6714b60932fb4ace8abedfb32cbf2bd0";
 // Your token
 options.token =
-  "0066714b60932fb4ace8abedfb32cbf2bd0IAB1SXLaUyctKCNhQ/4NKyH3psTQzHj19DX2pKJDjPVJuKPg45sAAAAAEAD5pEWcdMuoYAEA6AN0y6hg";
+  "0066714b60932fb4ace8abedfb32cbf2bd0IADgTii90Hi+tvfL7w0U7ZVafzO/CQZaIJTmox/MH2lc56Pg45sAAAAAEABVJf4HT/SpYAEA6ANP9Klg";
 
 const clientRTM = AgoraRTM.createInstance(appID);
 
@@ -43,4 +43,18 @@ async function joinRTMChannel(uid) {
   await channel.join().then(() => {
     console.log("You have successfully joined channel " + channel.channelId);
   });
+}
+
+async function sendMessage(peerMessage, peerId) {
+  await clientRTM
+    .sendMessageToPeer({ text: peerMessage }, peerId)
+    .then((sendResult) => {
+      if (sendResult.hasPeerReceived) {
+        console.log(
+          `Message has been received by: ${peerId} and Message is ${peerMessage}`
+        );
+      } else {
+        console.log(`Message sent to ${peerId}`);
+      }
+    });
 }

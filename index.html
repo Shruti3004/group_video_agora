@@ -35,6 +35,7 @@
 						<button id="magic-btn"  type="button" class="btn btn-block btn-dark btn-lg">
 							<i id="exit-icon" class="fas fa-magic"></i>
 						</button>
+						<input type="text" id="peer-message" class="form-control">
 					</div>
 				</div>
 				<div id="full-screen-video"></div>
@@ -127,8 +128,13 @@
 			var channelName = $('#form-channel').val();
 			var uid = parseInt($("#form-uid").val());
 			$("#modalForm").modal("hide");
-			initClientAndJoinChannel("6714b60932fb4ace8abedfb32cbf2bd0", "0066714b60932fb4ace8abedfb32cbf2bd0IACvHpcby6lYcgIwQaQEXG3j5W0uWAO/OPYO85J8VUCxsQZa8+gAAAAAEAA7EFxEBM2oYAEAAQAEzahg", "testing", uid);			
-		});		
+			initClientAndJoinChannel("6714b60932fb4ace8abedfb32cbf2bd0", "0066714b60932fb4ace8abedfb32cbf2bd0IAAGHePiTE6/u2Ham2FPsINf7EkGhVPVc9KXUDnxGtmCIwZa8+gAAAAAEAA7EFxEbvSpYAEAAQBt9Klg", "testing", uid);
+		});
+		$( "#magic-btn" ).click(function( event ) {
+			var peerMessage = $('#peer-message').val();
+			var uid = $("#form-uid").val();
+			sendMessage(peerMessage, uid);
+		});
 	</script>
 	<script src="ui.js"></script>
 	<script src="agora-interface.js"></script>	
