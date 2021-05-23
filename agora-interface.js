@@ -306,6 +306,7 @@ function customcreateCameraStream(uid) {
         console.log("[ERROR] : publish local stream error: " + err);
       });
 
+      console.log("SHRUTIIIIIIIIIIIIIIIII", localStream);
       enableUiControls(localStream, aiModelAppear); // move after testing
       localStreams.camera.stream = localStream; // keep track of the camera stream for later
 
@@ -337,8 +338,7 @@ function createCameraStream(uid) {
     // publish local stream
     client.publish(localStream, function (err) {
       console.log("[ERROR] : publish local stream error: " + err);
-    });
-
+    });    
     enableUiControls(localStream); // move after testing
     localStreams.camera.stream = localStream; // keep track of the camera stream for later
 

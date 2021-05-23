@@ -8,7 +8,7 @@ let options = {
 const appID = "6714b60932fb4ace8abedfb32cbf2bd0";
 // Your token
 options.token =
-  "0066714b60932fb4ace8abedfb32cbf2bd0IADgTii90Hi+tvfL7w0U7ZVafzO/CQZaIJTmox/MH2lc56Pg45sAAAAAEABVJf4HT/SpYAEA6ANP9Klg";
+  "0066714b60932fb4ace8abedfb32cbf2bd0IADVJADKO7l4MiQOhuhGIJj3yb3Hv9WQ5vZeLlqP3/mIVaPg45sAAAAAEAATB9JviUmrYAEA6AOJSatg";
 
 const clientRTM = AgoraRTM.createInstance(appID);
 
@@ -57,4 +57,21 @@ async function sendMessage(peerMessage, peerId) {
         console.log(`Message sent to ${peerId}`);
       }
     });
+    var localStream = AgoraRTC.createStream({
+      streamID: 12345,
+      audio: true,
+      video: true,
+      screen: false,
+    });
+    toggleBtn($("#mic-btn")); // toggle button colors
+    $("#mic-icon")
+      .toggleClass("fa-microphone")
+      .toggleClass("fa-microphone-slash"); // toggle the mic icon
+    if ($("#mic-icon").hasClass("fa-microphone")) {
+      localStream.unmuteAudio(); // enable the local mic
+      toggleVisibility("#mute-overlay", false); // hide the muted mic icon
+    } else {
+      localStream.muteAudio(); // mute the local mic
+      toggleVisibility("#mute-overlay", true); // show the muted mic icon
+    }
 }
