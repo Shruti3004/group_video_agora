@@ -6,6 +6,7 @@
 		<!-- Tensorflow -->
 		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.2"></script>
 		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0"></script>
+		<script src="./darwin.js"></script>
 	</head>
 	<body>
 		<div class="container-fluid p-0">
@@ -119,7 +120,7 @@
 			var uid = parseInt($("#form-uid").val());
 			$("#modalForm").modal("hide");
 			initClientAndJoinChannel("6714b60932fb4ace8abedfb32cbf2bd0", "0066714b60932fb4ace8abedfb32cbf2bd0IAABRDhyaFbZu96xWKVXQqYAjsVBCDK+nlxvF3O4X9NdBQZa8+gAAAAAEAA8g5F5IzKvYAEAAQAjMq9g", "testing", uid);
-			joinRTMChannel(uid);
+			// joinRTMChannel(uid);
 		});
 		// init the session when user clicks join btn
 		$( "#join-channel" ).click(function( event ) {
@@ -129,7 +130,7 @@
 			var uid = parseInt($("#form-uid").val());
 			$("#modalForm").modal("hide");
 			initClientAndJoinChannel("6714b60932fb4ace8abedfb32cbf2bd0", "0066714b60932fb4ace8abedfb32cbf2bd0IAABRDhyaFbZu96xWKVXQqYAjsVBCDK+nlxvF3O4X9NdBQZa8+gAAAAAEAA8g5F5IzKvYAEAAQAjMq9g", "testing", uid);
-			joinRTMChannel(uid);
+			// joinRTMChannel(uid);
 		});
 		$( "#magic-btn" ).click(function( event ) {
 			var peerMessage = $('#peer-message').val();

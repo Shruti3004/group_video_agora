@@ -211,77 +211,51 @@ async function getVideo() {
 }
 
 // Draw function responsible for drawing each frame of the stream
-function drawVideo(net, video) {
-
-  // streamCanvas.height = userVideoStream
-  //   .getVideoTracks()[0]
-  //   .getSettings().height;
-  // streamCanvas.width = userVideoStream.getVideoTracks()[0].getSettings().width;
-
+function drawVideo() {
   async function detectionFrame() {
-    const imgData = tempCanvasType.getImageData(0, 0, userCameraWidth, userCameraHeight);
-
-    const segmentation = await net.segmentPerson(imgData);
-    tempCanvasType.clearRect(0, 0, userCameraWidth, userCameraHeight);
-	  tempCanvasType.save();
-	  tempCanvasType.scale(-1, 1);
-	  tempCanvasType.translate(-userCameraWidth, 0);
-    tempCanvasType.drawImage(video, 0, 0, userCameraWidth, userCameraHeight);
-    tempCanvasType.restore();
-    bodyPix.drawBokehEffect(
-      streamCanvas,
-      tempCanvas,
-      segmentation,
-      backgroundBlurAmount,
-      edgeBlurAmount,
-      flipHorizontal
+    const imgData = tempCanvasType.getImageData(
+      0,
+      0,
+      userCameraWidth,
+      userCameraHeight
     );
-    requestAnimationFrame(detectionFrame);
   }
   detectionFrame();
 }
 
-async function streamMultiplexer() {
-  // init user streams and append to DOM tree
-  userVideoStream = await getUserVideo();
-  const net = await bodyPix.load(bodyPixOptions);
 
+async function streamMultiplexer() {
+  userVideoStream = await getUserVideo();  
+  const net = await bodyPix.load(bodyPixOptions);
   cameraElement.srcObject = userVideoStream;
-  //cameraElement.play();
+  options = {
+    video: cameraElement,
+    videoWidth: 600,
+    videoHeight: window.innerHeight - 20,
+    canvas: document.getElementById('scanvas'),
+    supervised: true,
+    showAngles: false,
+  };
+  darwin.initializeModel(options);
+  darwin.launchModel();
   const video = await getVideo();
   video.play();
-
   videoFrameRate = userVideoStream.getVideoTracks()[0].getSettings().frameRate;
-
   drawInterval = 1000 / videoFrameRate;
-
-  // userCameraWidth =
-  //   userCameraHeight *
-  //   userVideoStream.getVideoTracks()[0].getSettings().aspectRatio;
-
-  // video = document.createElement("video");
-  // video.srcObject = userVideoStream;
-  // video.play();
-
-  // Init base canvas
   document.body.appendChild(streamCanvas);
   streamCanvas.height = 500;
   streamCanvas.width = 600;
-  //streamCanvasType.fillRect(0, 0, 1920, 1080);
-  // Draw frames
-  // setInterval(drawVideo, drawInterval);
   tempCanvas.width = streamCanvas.width;
   tempCanvas.height = streamCanvas.height;
 
   //Kick off the stream
-  drawVideo(net, video);
+  drawVideo();
 
   // Get video stream from canvas
   mergedStream = streamCanvas.captureStream(60);
 
   tracks = mergedStream.getVideoTracks();
-
-  console.log(globalStream);
+  
   // Add tracks to global stream
   globalStream.addTrack(tracks[0]);
 }
@@ -298,18 +272,13 @@ function customcreateCameraStream(uid) {
   localStream.init(
     function () {
       console.log("getUserMedia successfully");
-      // TODO: add check for other streams. play local stream full size if alone in channel
-      localStream.play("local-video"); // play the given stream within the local-video div
-
-      // publish local stream
+      localStream.play("local-video");
       client.publish(localStream, function (err) {
         console.log("[ERROR] : publish local stream error: " + err);
       });
-
       console.log(localStream);
-      enableUiControls(localStream, aiModelAppear); // move after testing
-      localStreams.camera.stream = localStream; // keep track of the camera stream for later
-
+      enableUiControls(localStream, aiModelAppear);
+      localStreams.camera.stream = localStream;
       // for custom video
       streamMultiplexer();
     },
