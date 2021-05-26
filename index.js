@@ -40,20 +40,21 @@ async function joinRTMChannel(uid) {
   await clientRTM.login(options);
   console.log("Client LOG IN with this ID");
   await channel.join().then(() => {
-    console.log("You have successfully joined channel " + channel.channelId);
+    console.log("You have successfully joined channel hjjjjjjjjjjjjjjjjjjjjjjjjjjj " + channel.channelId);
   });
 }
 
 async function sendMessage(peerMessage, peerId) {
   await clientRTM
-    .sendMessageToPeer({ text: peerMessage }, peerId)
+    .sendMessageToPeer({ text: peerMessage }, "12345")
     .then((sendResult) => {
+      console.log(sendResult);;
       if (sendResult.hasPeerReceived) {
         console.log(
           `Message has been received by: ${peerId} and Message is ${peerMessage}`
         );
       } else {
-        console.log(`Message sent to ${peerId}`);
+        console.log(`Message sent to 12345`);
       }
     });
     var localStream = AgoraRTC.createStream({
@@ -62,7 +63,7 @@ async function sendMessage(peerMessage, peerId) {
       video: true,
       screen: false,
     });
-    toggleBtn($("#mic-btn")); // toggle button colors
+    toggleBtn($("#mic-btn"));
     $("#mic-icon")
       .toggleClass("fa-microphone")
       .toggleClass("fa-microphone-slash"); // toggle the mic icon
