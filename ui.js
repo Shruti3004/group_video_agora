@@ -35,11 +35,11 @@ function enableUiControls(localStream) {
   // keyboard listeners
   $(document).keypress(function (e) {
     switch (e.key) {
-      case "m":
+      case "o":
         console.log("squick toggle the mic");
         toggleMic(localStream);
         break;
-      case "v":
+      case "k":
         console.log("quick toggle the video");
         toggleVideo(localStream);
         break;
