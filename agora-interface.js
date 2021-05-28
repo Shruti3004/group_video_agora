@@ -1,7 +1,7 @@
 let userVideoStream;
 let globalStream;
 
-var aiModelAppear = localStorage.getItem("aiModelAppear") || false;
+var aiModelAppear = false;
 
 var aiModel = document.getElementById("magic-btn");
 aiModel.addEventListener("click", function (e) {
@@ -183,9 +183,7 @@ function joinChannel(channelName, uid, token) {
     function (uid) {
       console.log("User " + uid + " join channel successfully");
       console.log(aiModelAppear);
-      aiModelAppear == "true"
-        ? createCameraStream(uid)
-        : customcreateCameraStream(uid);
+      aiModelAppear ? createCameraStream(uid) : customcreateCameraStream(uid);
       localStreams.camera.id = uid; // keep track of the stream uid
     },
     function (err) {
