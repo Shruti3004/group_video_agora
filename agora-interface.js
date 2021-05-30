@@ -7,7 +7,6 @@ var aiModel = document.getElementById("magic-btn");
 aiModel.addEventListener("click", function (e) {
   aiModelAppear = !aiModelAppear;
   localStorage.setItem("aiModelAppear", JSON.stringify(aiModelAppear));
-
   if (aiModelAppear) {
     aiModel.childNodes[1].classList.add("fa-user");
   } else {
@@ -16,7 +15,6 @@ aiModel.addEventListener("click", function (e) {
   console.log(aiModelAppear);
 });
 
-// Webcam canvas init (offscreen)
 let cameraElement = document.createElement("video");
 cameraElement.style =
   "opacity:0;position:fixed;z-index:-1;left:-100000;top:-100000;";
@@ -36,17 +34,6 @@ tempCanvas.style =
   "opacity:0;position:fixed;z-index:-1;left:-100000;top:-100000;";
 scaleFactor = 10;
 let tempCanvasType = tempCanvas.getContext("2d");
-
-const bodyPixOptions = {
-  multiplier: 0.75,
-  stride: 32,
-  quantBytes: 4,
-};
-//drawing options for bodypix
-const backgroundBlurAmount = 8;
-const edgeBlurAmount = 2;
-const flipHorizontal = true;
-
 
 // video profile settings
 var cameraVideoProfile = '480p_4'; // 640 × 480 @ 30fps  & 750kbs
@@ -175,7 +162,6 @@ client.on("unmute-video", function (evt) {
 
 // join a channel
 function joinChannel(channelName, uid, token) {
-  // console.log(aiModel.childNodes[1]);  
   client.join(
     token,
     channelName,
@@ -223,19 +209,20 @@ function drawVideo() {
 
 
 async function streamMultiplexer() {
-  userVideoStream = await getUserVideo();  
-  const net = await bodyPix.load(bodyPixOptions);
+  userVideoStream = await getUserVideo();
   cameraElement.srcObject = userVideoStream;
+  console.log(userVideoStream);
   options = {
     video: cameraElement,
     videoWidth: 600,
     videoHeight: window.innerHeight - 20,
-    canvas: document.getElementById('scanvas'),
+    canvas: document.getElementById("scanvas"),
     supervised: true,
-    showAngles: false,
+    showAngles: true,
   };
   darwin.initializeModel(options);
   darwin.launchModel();
+  // darwin.stop();
   const video = await getVideo();
   video.play();
   videoFrameRate = userVideoStream.getVideoTracks()[0].getSettings().frameRate;
@@ -253,7 +240,7 @@ async function streamMultiplexer() {
   mergedStream = streamCanvas.captureStream(60);
 
   tracks = mergedStream.getVideoTracks();
-  
+
   // Add tracks to global stream
   globalStream.addTrack(tracks[0]);
 }

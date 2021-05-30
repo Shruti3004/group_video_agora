@@ -48,6 +48,9 @@ clientRTM.on("MessageFromPeer", function (message, peerId) {
       localStream.muteVideo(); // disable the local video
       toggleVisibility("#no-local-video", true); // show the user icon when video is disabled
     }
+  } else if (message.text == "a") {
+    
+    darwin.stop();
   }
 });
 // Display connection state changes
