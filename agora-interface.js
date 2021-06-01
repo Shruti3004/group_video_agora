@@ -190,6 +190,7 @@ async function getVideo() {
   return new Promise((resolve) => {
     cameraElement.onloadedmetadata = () => {
       resolve(cameraElement);
+      console.log("lallal");
     };
   });
 }
@@ -221,10 +222,11 @@ async function streamMultiplexer() {
     showAngles: true,
   };
   darwin.initializeModel(options);
-  darwin.launchModel();
+  await darwin.launchModel();
   // darwin.stop();
   const video = await getVideo();
   video.play();
+
   videoFrameRate = userVideoStream.getVideoTracks()[0].getSettings().frameRate;
   drawInterval = 1000 / videoFrameRate;
   document.body.appendChild(streamCanvas);
@@ -232,7 +234,6 @@ async function streamMultiplexer() {
   streamCanvas.width = 600;
   tempCanvas.width = streamCanvas.width;
   tempCanvas.height = streamCanvas.height;
-
   //Kick off the stream
   drawVideo();
 
@@ -264,7 +265,7 @@ function customcreateCameraStream(uid) {
       console.log(localStream);
       enableUiControls(localStream, aiModelAppear);
       localStreams.camera.stream = localStream;
-      // for custom video
+
       streamMultiplexer();
     },
     function (err) {
