@@ -27,13 +27,6 @@ const userCameraWidth = 600;
 let streamCanvas = document.getElementById("scanvas");
 let streamCanvasType = streamCanvas.getContext("2d");
 
-let tempCanvas = document.getElementById("tcanvas");
-tempCanvas.height = 1080;
-tempCanvas.width = 1920;
-tempCanvas.style =
-  "opacity:0;position:fixed;z-index:-1;left:-100000;top:-100000;";
-scaleFactor = 10;
-let tempCanvasType = tempCanvas.getContext("2d");
 
 // video profile settings
 var cameraVideoProfile = '480p_4'; // 640 × 480 @ 30fps  & 750kbs
@@ -194,20 +187,6 @@ async function getVideo() {
   });
 }
 
-// Draw function responsible for drawing each frame of the stream
-function drawVideo() {
-  async function detectionFrame() {
-    const imgData = tempCanvasType.getImageData(
-      0,
-      0,
-      userCameraWidth,
-      userCameraHeight
-    );
-  }
-  detectionFrame();
-}
-
-
 async function streamMultiplexer() {
   userVideoStream = await getUserVideo();
   cameraElement.srcObject = userVideoStream;
@@ -215,26 +194,23 @@ async function streamMultiplexer() {
   options = {
     video: cameraElement,
     videoWidth: 600,
-    videoHeight: window.innerHeight - 20,
+    videoHeight: 500,
     canvas: document.getElementById("scanvas"),
-    supervised: true,
+    supervised: false,
     showAngles: true,
   };
   darwin.initializeModel(options);
-  darwin.launchModel();
-  // darwin.stop();
-  const video = await getVideo();
-  video.play();
-  videoFrameRate = userVideoStream.getVideoTracks()[0].getSettings().frameRate;
-  drawInterval = 1000 / videoFrameRate;
-  document.body.appendChild(streamCanvas);
-  streamCanvas.height = 500;
-  streamCanvas.width = 600;
-  tempCanvas.width = streamCanvas.width;
-  tempCanvas.height = streamCanvas.height;
-
-  //Kick off the stream
-  drawVideo();
+  await darwin.launchModel();
+  setTimeout(() => {
+    darwin.stop();
+  }, 1000); 
+  // const video = await getVideo();
+  // video.play();
+  //videoFrameRate = userVideoStream.getVideoTracks()[0].getSettings().frameRate;
+  //drawInterval = 1000 / videoFrameRate;
+  // document.body.appendChild(streamCanvas);
+  // streamCanvas.height = 500;
+  // streamCanvas.width = 600;
 
   // Get video stream from canvas
   mergedStream = streamCanvas.captureStream(60);
