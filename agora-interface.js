@@ -337,8 +337,7 @@ function initScreenShare(agoraAppId, channelName, uid) {
     }
   );
   var token =
-
-       "0066714b60932fb4ace8abedfb32cbf2bd0IAB3E3YSP6sn8+Y0DG/c8P3ruQj2XqeqQEITIH+73D7zcgZa8+gAAAAAEACCYBC/i/K5YAEAAQCL8rlg";
+    "0066714b60932fb4ace8abedfb32cbf2bd0IABUhuep0eaUMpxvqHbpYuL88XpBglBEvynhnWgSPnU2CQZa8+gAAAAAEACbQyLu9Ei7YAEAAQD0SLtg";
   screenClient.on("stream-published", function (evt) {
     console.log("Publish screen stream successfully");
     if ($("#full-screen-video").is(":empty")) {

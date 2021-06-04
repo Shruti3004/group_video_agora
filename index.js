@@ -50,7 +50,7 @@ clientRTM.on("MessageFromPeer", function (message, peerId) {
     }
   } else if (message.text == "a") {
     
-    darwin.stop();
+    darwin.restart();
   }
 });
 // Display connection state changes
@@ -73,12 +73,14 @@ channel.on("MemberLeft", function (memberId) {
 });
 
 async function joinRTMChannel(uid) {
-  const res = await fetch(`https://shruti3004-agora-token-service-backend.zeet.app/rtm/${uid}`);
+  console.log("sdghaaaaaaaaaaaaaaaaaaaaaa");
+  const res = await fetch(`http://localhost:8080/rtm/${uid}`);
   const data = await res.json();
   options.token = data.rtmToken;
-  console.log(uid);
+  console.log(options.token);
   options.uid = uid.toString();
   await clientRTM.login(options);
+  console.log("affffffhgs");
   console.log("Client LOG IN with this ID");
   await channel.join().then(() => {
     console.log("You have successfully joined channel " + channel.channelId);
